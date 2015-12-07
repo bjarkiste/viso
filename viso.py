@@ -4,15 +4,18 @@ import datetime
 import time
 import getpass
 
+#Probably want to replace all regex searches with soup
+from bs4 import BeautifulSoup
 
 #This url will register you if followed
 url = 'https://myschool.ru.is/myschool/?Page=Exe&ID=2.23&view=0&FagID=0&act=2&e='
-
+#This is the url to an event
 nurl = 'https://myschool.ru.is/myschool/?Page=Exe&ID=2.23&sID=2&e='
 
 username = input('Username: ')
 password = getpass.getpass()
 
+#Url to myschool frontpage used to find available events
 s = requests.get('https://myschool.ru.is/myschool', auth=(username, password)).content.decode('ISO-8859-1')
 
 c = re.findall('<td.*?Page=Exe&ID=2.23&sID=2&e=.*?td>',s)
@@ -21,13 +24,13 @@ if len(c) == 0:
 	print('There are no events available')
 	exit()
 
-#Display choices
+#List events
 print('The following events are available:')
 for k,i in enumerate(c):
 	i = re.search('title=\'.*?\'', i)
 	print('  {} - {}'.format(k, i.group()[7:-1]))
 
-#Pick something
+#Pick an event
 choice = int(input('Choose an event: '))
 
 try:
@@ -38,8 +41,8 @@ except IndexError:
 	print('That is an illegal choice, you dingus!')
 	exit()
 
-c = re.search('id\=\'personname\'\>\<span\>.*?\<\/span\>',s)
-name = c.group().replace('id=\'personname\'><span>','').replace('</span>','')
+soup = BeautifulSoup(s, 'html.parser')
+name = soup.find('div', id='personname').contents[0].contents[0]
 
 #Find time and date and check if some dungus is already registered
 s = requests.get(nurl+num, auth=(username, password)).content.decode('ISO-8859-1')
@@ -62,14 +65,13 @@ d,m,y = c1.split('.')
 h,minute = c2.split(':')
 
 
+#We start spamming approximately 3 minutes before registration starts
 date = datetime.datetime(int(y),int(m),int(d),int(h),int(minute))
 date = date - datetime.timedelta(minutes=3)
 print(date)
 
-if datetime.datetime.now() < date: print('Will start spamming at: {}'.format(date))
-
-#We wait until a few minutes before the registration to start spamming
 now = datetime.datetime.now()
+if now < date: print('Will start spamming at: {}'.format(date))
 while now < date:
 	time.sleep(10)
 	now = datetime.datetime.now()
