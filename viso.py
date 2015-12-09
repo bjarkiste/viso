@@ -49,26 +49,30 @@ s = requests.get(nurl+num, auth=(username, password)).content.decode('ISO-8859-1
 
 l = '\<strong\>%s\<\/strong\>' % name
 c = re.search(l,s)
-if not c:
+if c:
 	print('You are already registered, you dingus!')
 	exit(0)
 
-kek = re.search('Registration starts(.\s)*',s).group()
-print(kek)
-c = re.search('\d+\.\d+\.\d+ \d+:\d+', s).group()
-print(c)
 
-exit()
-#Datestuff
-c1, c2 = c.split()
-d,m,y = c1.split('.')
-h,minute = c2.split(':')
+#We find the date to register
+soup = BeautifulSoup(s, 'html.parser')
+datelis = [i for i in soup.find_all('tr') if i('div', class_='ruPanelsLabel')]
+
+#Currently only works for english
+for i in datelis:
+	div = i('div', class_='ruPanelsLabel')[0]
+	if div.contents and 'Registration starts:' in div.contents[0]:
+		i = i.getText().replace('Registration starts:','').strip()
+		day, time = i.split()[1:]
+		day = day.split('.')
+		time = time.split(':')
+		break
 
 
-#We start spamming approximately 3 minutes before registration starts
-date = datetime.datetime(int(y),int(m),int(d),int(h),int(minute))
-date = date - datetime.timedelta(minutes=3)
-print(date)
+#We start spamming approximately 2 minutes before registration starts
+date = datetime.datetime(int(day[2]),int(day[1]),int(day[0]),int(time[0]),int(time[1]))
+date = date - datetime.timedelta(minutes=2)
+
 
 now = datetime.datetime.now()
 if now < date: print('Will start spamming at: {}'.format(date))
