@@ -43,6 +43,7 @@ except IndexError:
 
 soup = BeautifulSoup(s, 'html.parser')
 name = soup.find('div', id='personname').contents[0].contents[0]
+registration_string = 'Registration starts:' if soup.find('a', id='icelandicbtn') else 'Skráning hefst:'
 
 #Find time and date and check if some dungus is already registered
 s = requests.get(nurl+num, auth=(username, password)).content.decode('ISO-8859-1')
@@ -61,8 +62,8 @@ datelis = [i for i in soup.find_all('tr') if i('div', class_='ruPanelsLabel')]
 #Currently only works for english
 for i in datelis:
 	div = i('div', class_='ruPanelsLabel')[0]
-	if div.contents and 'Registration starts:' in div.contents[0]:
-		i = i.getText().replace('Registration starts:','').strip()
+	if div.contents and registration_string in div.contents[0]:
+		i = i.getText().replace(registration_string,'').strip()
 		day, time = i.split()[1:]
 		day = day.split('.')
 		time = time.split(':')
