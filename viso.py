@@ -16,7 +16,7 @@ username = input('Username: ')
 password = getpass.getpass()
 
 #Url to myschool frontpage used to find available events
-s = requests.get('https://myschool.ru.is/myschool', auth=(username, password)).content.decode('ISO-8859-1')
+s = requests.get('https://myschool.ru.is/myschool/?Page=Front', auth=(username, password)).content.decode('ISO-8859-1')
 
 c = re.findall('<td.*?Page=Exe&ID=2.23&sID=2&e=.*?td>',s)
 
