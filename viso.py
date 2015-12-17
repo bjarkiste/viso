@@ -18,8 +18,15 @@ password = getpass.getpass()
 #Url to myschool frontpage used to find available events
 s = requests.get('https://myschool.ru.is/myschool/?Page=Front', auth=(username, password)).content.decode('ISO-8859-1')
 
-c = re.findall('<td.*?Page=Exe&ID=2.23&sID=2&e=.*?td>',s)
+#Check if password is correct
+soup = BeautifulSoup(s, 'html.parser')
 
+if soup.find('title').contents[0][:3] == '401':
+	print('Wrong username or password')
+	exit()
+
+
+c = re.findall('<td.*?Page=Exe&ID=2.23&sID=2&e=.*?td>',s)
 if len(c) == 0:
 	print('There are no events available')
 	exit()
@@ -31,7 +38,11 @@ for k,i in enumerate(c):
 	print('  {} - {}'.format(k, i.group()[7:-1]))
 
 #Pick an event
-choice = int(input('Choose an event: '))
+try:
+	choice = int(input('Choose an event: '))
+except ValueError:
+	print('Choose a number, you dingus!')
+	exit()
 
 try:
 	c = c[choice]
@@ -41,6 +52,7 @@ except IndexError:
 	print('That is an illegal choice, you dingus!')
 	exit()
 
+#Icelandic support by Kalli
 soup = BeautifulSoup(s, 'html.parser')
 name = soup.find('div', id='personname').contents[0].contents[0]
 registration_string = 'Registration starts:' if soup.find('a', id='icelandicbtn') else 'Skráning hefst:'
@@ -59,7 +71,6 @@ if c:
 soup = BeautifulSoup(s, 'html.parser')
 datelis = [i for i in soup.find_all('tr') if i('div', class_='ruPanelsLabel')]
 
-#Currently only works for english
 for i in datelis:
 	div = i('div', class_='ruPanelsLabel')[0]
 	if div.contents and registration_string in div.contents[0]:

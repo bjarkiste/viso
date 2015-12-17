@@ -1,6 +1,8 @@
-### cmdviso.py ###
-Old version, should work but is not very user friendly.
+Script for registering to events on myschool.
+Requires the requests package.
 
 ### viso.py ###
-New version, much more user friendly but currently only
-works if you use english version of myschool by default.
+New version, much more user friendly
+
+### cmdviso.py ###
+Old version, should work but is not very user friendly.
