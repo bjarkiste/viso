@@ -1,7 +1,8 @@
+#!/usr/bin/env python3
 import requests
 import re
 import datetime
-import time
+import time as time2
 import getpass
 
 #Probably want to replace all regex searches with soup
@@ -89,7 +90,7 @@ date = date - datetime.timedelta(minutes=2)
 now = datetime.datetime.now()
 if now < date: print('Will start spamming at: {}'.format(date))
 while now < date:
-	time.sleep(10)
+	time2.sleep(10)
 	now = datetime.datetime.now()
 
 
