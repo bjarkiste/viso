@@ -2,7 +2,7 @@
 import requests
 import re
 import datetime
-import time as time2
+import time
 import getpass
 
 #Probably want to replace all regex searches with soup
@@ -76,21 +76,21 @@ for i in datelis:
 	div = i('div', class_='ruPanelsLabel')[0]
 	if div.contents and registration_string in div.contents[0]:
 		i = i.getText().replace(registration_string,'').strip()
-		day, time = i.split()[1:]
+		day, t = i.split()[1:]
 		day = day.split('.')
-		time = time.split(':')
+		t = t.split(':')
 		break
 
 
 #We start spamming approximately 2 minutes before registration starts
-date = datetime.datetime(int(day[2]),int(day[1]),int(day[0]),int(time[0]),int(time[1]))
+date = datetime.datetime(int(day[2]),int(day[1]),int(day[0]),int(t[0]),int(t[1]))
 date = date - datetime.timedelta(minutes=2)
 
 
 now = datetime.datetime.now()
 if now < date: print('Will start spamming at: {}'.format(date))
 while now < date:
-	time2.sleep(10)
+	time.sleep(10)
 	now = datetime.datetime.now()
 
 
