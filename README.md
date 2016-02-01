@@ -1,8 +1,6 @@
 Script for registering to events on myschool.
-Requires the requests package.
+Requires [Requests](http://docs.python-requests.org).
 
 ### viso.py ###
-New version, much more user friendly
-
-### cmdviso.py ###
-Old version, should work but is not very user friendly.
+Simply run this and follow instructions. You'll be drinking beers next friday
+or your money back.
