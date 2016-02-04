@@ -4,13 +4,11 @@ import re
 import datetime
 import time
 import getpass
-
-#Probably want to replace all regex searches with soup
 from bs4 import BeautifulSoup
 
-#This url will register you if followed
+#Url to registration
 url = 'https://myschool.ru.is/myschool/?Page=Exe&ID=2.23&view=0&FagID=0&act=2&e='
-#This is the url to an event
+#Url to an event
 nurl = 'https://myschool.ru.is/myschool/?Page=Exe&ID=2.23&sID=2&e='
 
 username = input('Username: ')
@@ -21,33 +19,31 @@ s = requests.get('https://myschool.ru.is/myschool/?Page=Front', auth=(username, 
 
 #Check if password is correct
 soup = BeautifulSoup(s, 'html.parser')
-
 if soup.find('title').contents[0][:3] == '401':
 	print('Wrong username or password')
 	exit()
 
 
+#Pick an event
 c = re.findall('<td.*?Page=Exe&ID=2.23&sID=2&e=.*?td>',s)
 if len(c) == 0:
 	print('There are no events available')
 	exit()
 
-#List events
 print('The following events are available:')
 for k,i in enumerate(c):
 	i = re.search('title=\'.*?\'', i)
 	print('  {} - {}'.format(k, i.group()[7:-1]))
 
-#Pick an event
 try:
 	choice = int(input('Choose an event: '))
 except ValueError:
 	print('Choose a number, you dingus!')
 	exit()
 
+#Get the event id
 try:
 	c = c[choice]
-	#Get the number
 	num = re.search('ID=2&e=.*?\"', c).group()[7:-1]
 except IndexError:
 	print('That is an illegal choice, you dingus!')
@@ -76,16 +72,15 @@ for i in datelis:
 	div = i('div', class_='ruPanelsLabel')[0]
 	if div.contents and registration_string in div.contents[0]:
 		i = i.getText().replace(registration_string,'').strip()
-		day, t = i.split()[1:]
+		day, hour = i.split()[1:]
 		day = day.split('.')
-		t = t.split(':')
+		hour = hour.split(':')
 		break
 
 
 #We start spamming approximately 2 minutes before registration starts
-date = datetime.datetime(int(day[2]),int(day[1]),int(day[0]),int(t[0]),int(t[1]))
+date = datetime.datetime(int(day[2]),int(day[1]),int(day[0]),int(hour[0]),int(hour[1]))
 date = date - datetime.timedelta(minutes=2)
-
 
 now = datetime.datetime.now()
 if now < date: print('Will start spamming at: {}'.format(date))

@@ -1,6 +1,5 @@
-Script for registering to events on myschool.
-Requires [Requests](http://docs.python-requests.org).
+### Viso ###
+Simple python script for registering to events on myschool. Requires [Requests](http://docs.python-requests.org).
 
-### viso.py ###
-Simply run this and follow instructions. You'll be drinking beers next friday
+Simply install the [Requests](http://docs.python-requests.org) module, run **viso.py** and follow instructions. You'll be drinking beers next friday
 or your money back.
